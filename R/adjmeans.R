@@ -46,19 +46,17 @@ lapply(adjustment_variables, function(x) x[which(vars[[i]] == levels(as.factor(v
 			names(means_table_temp) <- c(adjustment_vars_temp, "mean", "variance")
 			weights_df[[j]] <- merge(weights_temp, means_table_temp)
 			standardised_mean[j] <- sum(weights_df[[j]]$mean * weights_df[[j]]$weight, na.rm = TRUE) / sum(weights_df[[j]]$weight, na.rm = TRUE)
-			var_standardised_mean[j] <- sum(weights_df[[j]]$variance * (weights_df[[j]]$weight^2), na.rm = TRUE) / sum(weights_df[[j]]$weight^2, na.rm = TRUE)
-#			var_standardised_mean[j] <- sum(weights_df[[j]]$mean * weights_df[[j]]$weight, na.rm = TRUE) / sum(weights_df[[j]]$weight, na.rm = TRUE)
-# sum(weights_df$variance * (weights_df$weight)^2) / sum((weights_df$weight)^2)
+			var_standardised_mean[j] <- sum(weights_df[[j]]$variance * (weights_df[[j]]$weight^2), na.rm = TRUE) / (sum(weights_df[[j]]$weight, na.rm = TRUE)^2)
 			}
 				
- 		tables_df[[i]] <- data.frame("Variable" = categorical_var_labels[[i]][[1]], "Levels" = categorical_var_labels[[i]][[2]], "N" = as.numeric(tables[[i]]), "Proportion" = format(as.numeric(prop.table(tables[[i]])), digits = 2), "Mean" = standardised_mean, "Variance" = var_standardised_mean, "sd" = sqrt(var_standardised_mean))
+ 		tables_df[[i]] <- data.frame("Variable" = categorical_var_labels[[i]][[1]], "Levels" = categorical_var_labels[[i]][[2]], "N" = as.numeric(tables[[i]]), "Proportion" = format(as.numeric(prop.table(tables[[i]])), digits = 2), "Mean" = standardised_mean, "Variance" = var_standardised_mean, "se" = sqrt(var_standardised_mean))
 		# keep only as many lines as there are levels of the categorical variable
 		tables_df[[i]] <- tables_df[[i]][1:length(categorical_var_labels[[i]][[2]]),]
 
 		}
 
 	table_dataframe <- do.call(rbind, tables_df)
-	names(table_dataframe)[3:(dim(table_dataframe)[2])] <- c("N", "proportion", outcome_label, "variance", "sd")
+	names(table_dataframe)[3:(dim(table_dataframe)[2])] <- c("N", "proportion", outcome_label, "variance", "se")
 	table_dataframe[,1:3] <- sapply(table_dataframe[,1:3], as.character)
 	table_dataframe[,4:(dim(table_dataframe)[2])] <- sapply(table_dataframe[,4:(dim(table_dataframe)[2])], function(x) as.numeric(as.character(x)))
 	table_dataframe[,4:(dim(table_dataframe)[2])] <- format(table_dataframe[,4:(dim(table_dataframe)[2])], digits = 2, nsmall = 2)

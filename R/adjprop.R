@@ -37,25 +37,24 @@ function(dataset, outcome_var_name, categorical_vars, outcome_label, categorical
 		for (j in 1:length(categorical_var_labels[[i]][[2]])) {
 			table_temp <- tapply(dataset[which(vars[[i]] == levels(as.factor(vars[[i]]))[j]), outcome_var_name], 
 lapply(adjustment_variables, function(x) x[which(vars[[i]] == levels(as.factor(vars[[i]]))[j])]), mean, na.rm = TRUE)					
-			variance_temp <- tapply(dataset[which(vars[[i]] == levels(as.factor(vars[[i]]))[j]), outcome_var_name], 
-lapply(adjustment_variables, function(x) x[which(vars[[i]] == levels(as.factor(vars[[i]]))[j])]), var, na.rm = TRUE)					
+			variance_temp <- tapply(dataset[which(vars[[i]] == levels(as.factor(vars[[i]]))[j]), outcome_var_name], lapply(adjustment_variables, function(x) x[which(vars[[i]] == levels(as.factor(vars[[i]]))[j])]), function(y) (mean(y, na.rm = TRUE) * (1 - (mean(y, na.rm = TRUE)))))					
 			weights_temp <- data.frame(expand.grid(dimnames(weights)), expand.grid(weights))
 			names(weights_temp) <- c(adjustment_vars_temp, "weight")
 			means_table_temp <- data.frame(expand.grid(dimnames(table_temp)), expand.grid(table_temp), expand.grid(variance_temp))
 			names(means_table_temp) <- c(adjustment_vars_temp, "mean", "variance")
 			weights_df[[j]] <- merge(weights_temp, means_table_temp)
 			standardised_mean[j] <- sum(weights_df[[j]]$mean * weights_df[[j]]$weight, na.rm = TRUE) / sum(weights_df[[j]]$weight, na.rm = TRUE)
-			var_standardised_mean[j] <- sum(weights_df[[j]]$variance * (weights_df[[j]]$weight^2), na.rm = TRUE) / sum(weights_df[[j]]$weight^2, na.rm = TRUE)
+			var_standardised_mean[j] <- sum(weights_df[[j]]$variance * (weights_df[[j]]$weight^2), na.rm = TRUE) / (sum(weights_df[[j]]$weight, na.rm = TRUE)^2)
 			}
 				
- 		tables_df[[i]] <- data.frame("Variable" = categorical_var_labels[[i]][[1]], "Levels" = categorical_var_labels[[i]][[2]], "N" = as.numeric(tables[[i]]), "Proportion" = format(as.numeric(prop.table(tables[[i]])), digits = 2), "Mean" = standardised_mean, "Variance" = var_standardised_mean, "sd" = sqrt(var_standardised_mean))
+ 		tables_df[[i]] <- data.frame("Variable" = categorical_var_labels[[i]][[1]], "Levels" = categorical_var_labels[[i]][[2]], "N" = as.numeric(tables[[i]]), "Proportion" = format(as.numeric(prop.table(tables[[i]])), digits = 2), "Mean" = standardised_mean, "Variance" = var_standardised_mean, "se" = sqrt(var_standardised_mean))
 		# keep only as many lines as there are levels of the categorical variable
 		tables_df[[i]] <- tables_df[[i]][1:length(categorical_var_labels[[i]][[2]]),]
 
 		}
 
 	table_dataframe <- do.call(rbind, tables_df)
-	names(table_dataframe)[3:(dim(table_dataframe)[2])] <- c("N", "proportion", outcome_label, "variance", "sd")
+	names(table_dataframe)[3:(dim(table_dataframe)[2])] <- c("N", "proportion", outcome_label, "variance", "se")
 	table_dataframe[,1:3] <- sapply(table_dataframe[,1:3], as.character)
 	table_dataframe[,4:(dim(table_dataframe)[2])] <- sapply(table_dataframe[,4:(dim(table_dataframe)[2])], function(x) as.numeric(as.character(x)))
 	table_dataframe[,4:(dim(table_dataframe)[2])] <- format(table_dataframe[,4:(dim(table_dataframe)[2])], digits = 2, nsmall = 2)
