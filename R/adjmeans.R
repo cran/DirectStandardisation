@@ -1,5 +1,5 @@
 adjmeans <-
-function(dataset, outcome_var_name, categorical_vars, outcome_label, categorical_var_labels, adjustment_vars = c("age", "sex"), adjustment_var_labels = c("age", "sex"), title = "") {
+function(dataset, outcome_var_name, categorical_vars, outcome_label = outcome_var_name, categorical_var_labels = NULL, adjustment_vars = c("age", "sex"), adjustment_var_labels = NULL, ndigits = 2, title = "") {
 
 	# outcome_variable should be a character representing a factor variable
 	# categorical_variables should be a vector of characters representing factors for which numbers and percentages will be calculated
@@ -12,6 +12,17 @@ function(dataset, outcome_var_name, categorical_vars, outcome_label, categorical
 		vars[[i]] <- dataset[,paste(categorical_vars[[i]])]
 		}
 
+	if (is.null(categorical_var_labels)) {
+		categorical_var_labels <- list()
+		for (i in 1:length(categorical_vars)) {
+			categorical_var_labels[[i]] <- list(categorical_vars[i], levels(as.factor(vars[[i]])))
+			}		
+		}
+
+	if (is.null(adjustment_var_labels)) {
+		adjustment_var_labels <- adjustment_vars
+		}
+		
 	tables <- list()
 	tables_df <- list()
 	adjustment_vars_temp <- adjustment_vars
@@ -59,7 +70,7 @@ lapply(adjustment_variables, function(x) x[which(vars[[i]] == levels(as.factor(v
 	names(table_dataframe)[3:(dim(table_dataframe)[2])] <- c("N", "proportion", outcome_label, "variance", "se")
 	table_dataframe[,1:3] <- sapply(table_dataframe[,1:3], as.character)
 	table_dataframe[,4:(dim(table_dataframe)[2])] <- sapply(table_dataframe[,4:(dim(table_dataframe)[2])], function(x) as.numeric(as.character(x)))
-	table_dataframe[,4:(dim(table_dataframe)[2])] <- format(table_dataframe[,4:(dim(table_dataframe)[2])], digits = 2, nsmall = 2)
+	table_dataframe[,4:(dim(table_dataframe)[2])] <- format(table_dataframe[,4:(dim(table_dataframe)[2])], digits = ndigits, nsmall = ndigits)
 	table_dataframe$Variable <- as.character(table_dataframe$Variable)
 	table_dataframe[duplicated(table_dataframe$Variable),]$Variable <- " "
 

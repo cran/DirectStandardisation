@@ -11,7 +11,6 @@ Adjusted Means and Proportions by Direct Standardisation
 }
 \details{
 Calculates adjusted means and proportions of a variable by groups defined by another variable, standardised to the structure of the adjustment variables in the whole dataset using direct standardisation.
-% Produces adjusted means and proportions of a variable by groups defined by another variable, standardised to the structure of the adjustment variables in the whole dataset using direct standardisation.
 
 \packageIndices{DirectStandardisation}
 }
