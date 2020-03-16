@@ -1,8 +1,8 @@
-d0c58402ae03a833d57a9af88c19a6c3 *DESCRIPTION
+6ce0a3aaeb4cb458f0684e55f2a05f34 *DESCRIPTION
 657881c129216646abae6ce2a0cff4b1 *NAMESPACE
-af8410a6c6b3e350a5197251c11e6e87 *R/adjmeans.R
-8df67b91721fe7de4b0c4990676b5e4b *R/adjprop.R
-0d84d2d1b363925f7ca90161d17f4b74 *build/partial.rdb
+f908605a39c67bfb2095c3008c2a23de *R/adjmeans.R
+71a541767b097174afb34cbb4b100501 *R/adjprop.R
+8f462fc38481d50fb895e758c99a6104 *build/partial.rdb
 aa40de7f5dae92fc7ece81fcbbc67ac1 *man/DirectStandardisation-package.Rd
-42d57bc4966134667921aa30b81da428 *man/adjmeans.Rd
-6eb31620f36961e34335326a32c84ff5 *man/adjprop.Rd
+63c93f6c2b1816aa627be3284599d740 *man/adjmeans.Rd
+e95f2005ef1a2d5f3d7d47114acde18e *man/adjprop.Rd

@@ -8,26 +8,29 @@ Calculate adjusted means using direct standardisation
 Calculates adjusted means of a variable by groups defined by another variable using direct standardisation to the structure of the dataset, as defined by one or more variables.
 }
 \usage{
-adjmeans(dataset, outcome_var_name, categorical_vars, outcome_label = outcome_var_name, 
+adjmeans(dataset, outcome_vars, categorical_vars, outcome_var_labels = NULL, 
 categorical_var_labels = NULL, adjustment_vars = c("age", "sex"), 
-adjustment_var_labels = NULL, ndigits = 2, title = "")
+adjustment_var_labels = NULL, format_table = FALSE, 
+transpose_table = FALSE, ndigits = 2, title = "")
 }
 
 \arguments{
   \item{dataset}{
 A dataframe containing all variables to be used.
 }
-  \item{outcome_var_name}{
-The name of the outcome variable in \code{dataset} (character). This is the variable of which adjusted means will be calculated.
+  \item{outcome_vars}{
+The names of the outcome variables in \code{dataset} (character vector). These are the variables of which adjusted means will be calculated.
 }
   \item{categorical_vars}{
 A character vector containing the names of categorical variables which define the groups by which adjusted means will be calculated. They must exist in \code{dataset}.
 }
-  \item{outcome_label}{
-A label for the outcome variable to be printed in the table produced. Defaults to \code{outcome_var_name}.
+  \item{outcome_var_labels}{
+Labels for the outcome variable to be printed in the table produced. This must be a list of length equal to the number of outcome variables, with each element a list of length two, each element of which is a character with a label.  
+Note that if there is only one variable it should be 
+\code{list(list("Label 1", "Label 2"))}. Defaults to \code{outcome_vars}.
 }
   \item{categorical_var_labels}{
-Labels for the categorical variables by which means will be calculated, to be printed in the table produced. This must be a list of length equal to the number of variables for which adjusted means will be calculated, with each element a list of length two, the first element of which is a character with a label for the variable and the second element a character vector with labels for the levels of the variable. For example for two variables, the first of which has 3 levels and the second 2, 
+Labels for the categorical variables by which means will be calculated, to be printed in the table produced. This must be a list of length equal to the number of variables by which adjusted means will be calculated, with each element a list of length two, the first element of which is a character with a label for the variable and the second element a character vector with labels for the levels of the variable. For example for two variables, the first of which has 3 levels and the second 2, 
 \code{list(list("Variable 1", c("Group 1", "Group 2", "Group 3")),}
 \code{list("Variable 2", c("Group 1", "Group 2")))}. 
 Note that if there is only one variable it should be 
@@ -40,6 +43,12 @@ A character vector containing the variable names of categorical variables to be 
 }
   \item{adjustment_var_labels}{
 A character vector with labels for the variables adjusted for, to be printed in the table produced. If null, the variable names are used.
+}
+  \item{format_table}{
+Whether the output table should be formatted. Defaults to \code{FALSE}.
+}
+  \item{transpose_table}{
+Whether the output table should be transposed. Defaults to \code{FALSE}.
 }
   \item{ndigits}{
 Number of digits to be printed (defaults to 2).
@@ -69,8 +78,8 @@ data <- data.frame("sleep" = rnorm(50, mean = 8, sd = 1.5),
 "sex" = c(rep("m", 25), rep("f", 25)), 
 "age_group" = rep(c("20-29", "30-39", "40-49", "50-59", "60-69"), 5))
 
-adjmeans(dataset = data, outcome_var_name = "sleep", 
-categorical_vars = "sex", outcome_label = "Sleep duration", 
+adjmeans(dataset = data, outcome_vars = "sleep", 
+categorical_vars = "sex", outcome_var_label = "Sleep duration", 
 categorical_var_labels = list(list("Sex", c("Female", "Male"))), 
 adjustment_vars = "age_group", adjustment_var_labels = "age", 
 title = "Means of sleep duration by sex.")
@@ -83,7 +92,7 @@ data <- data.frame("sleep" = rnorm(50, mean = 8, sd = 1.5),
 "age_group" = rep(c("20-29", "30-39", "40-49", "50-59", "60-69"), 5))
 
 # no labels, more digits
-adjmeans(dataset = data, outcome_var_name = "sleep", 
+adjmeans(dataset = data, outcome_vars = "sleep", 
 categorical_vars = "sex", adjustment_vars = "age_group", 
 ndigits = 4, title = "Means of sleep duration by sex.")
 }
